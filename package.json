@@ -1,0 +1,12 @@
+{
+  "name": "servertest-fork",
+  "version": "1.0.0",
+  "description": "testing server",
+  "main": "tcp-server-GPS103.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Jorge Toro",
+  "license": "ISC"
+}

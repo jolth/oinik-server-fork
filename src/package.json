@@ -1,0 +1,26 @@
+{
+  "name": "oinik-server",
+  "version": "1.0.0",
+  "description": "GPS tracking system",
+  "main": "main.js",
+  "scripts": {
+    "start": "nodemon main",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oinik/oinik-server.git"
+  },
+  "author": "Jorge Toro <jolthgs@gmail.com> (https://jolthgs.wordpress.com)",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/oinik/oinik-server/issues"
+  },
+  "homepage": "https://github.com/oinik/oinik-server#readme",
+  "dependencies": {
+    "config": "^3.3.10"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}
