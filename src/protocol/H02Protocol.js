@@ -17,28 +17,9 @@
 
 const net = require('node:net');
 
+// [config] protocol
 const HOST = ''; // [config] host.
 const PORT = 7011;
-
-// [config] range of protocols port
-//const protocolsPort = {
-//    from: 10101,
-//    to: 10110, 
-//    next() {
-//        if (this.current <= this.to) {
-//            return {
-//                done: false,
-//                value: this.current++
-//            };
-//        } else {
-//            return { done: true };
-//        }
-//    },
-//    [Symbol.iterator]() {
-//        this.current = this.from;
-//        return this;
-//    }
-//};
 
 const server = net.createServer(socket => {
     //socket.setEncoding('utf8');
@@ -60,6 +41,7 @@ const server = net.createServer(socket => {
         }
 
         // valid data
+        console.log(Chuck);
 
     });
 
