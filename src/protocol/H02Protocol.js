@@ -41,7 +41,7 @@ const server = net.createServer(socket => {
         }
 
         // valid data
-        console.log(Chuck);
+        console.log(chuck);
 
     });
 
