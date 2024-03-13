@@ -16,36 +16,49 @@
 
 'use strict';
 
-const { createServer, Server } = require('node:net');
+const { createServer } = require('node:net');
 
 const HOST = "0.0.0.0"; 
 const PORT = 7011;
-let counter = 0;
+const TIMEOUT = 240000;
+const LENGTHFORECHO = 25;
 
-//const server = new Server();
 const server = createServer();
 
 server.on('connection', socket => {
-    socket.id = counter++;
+    //socket.setEncoding('utf8');
+    socket.setTimeout(TIMEOUT); // [config] 4 minutes of inactivity
+
+    // [log / debug]
+    //socket.remoteAddPort = `${socket.remoteAddress}:${socket.remotePort}`;
+    //console.log(`Client connected ${socket.remoteAddPort}`);
     console.log(`New client connected ${socket.remoteAddress}:${socket.remotePort}`);
-
-    socket.on('data', chunk => {
-        const chunkLength = chunk.length;
-
-        console.log(`${new Date()} [${chunkLength}] "${chunk.toString()}"`);
-
-        if (chunkLength === 25) {
-            //socket.pipe(socket);
-            socket.write(chunk);
-        }
-    })
 
     socket.on('end', () => {
         console.log("Closing connection with the client: ", socket.address());
     })
+
+    socket.on('data', chunk => {
+        // [log / debug]
+        console.log(`${new Date()} [${chunk.length}] "${chunk.toString('ascii')}"`);
+
+        if (chunk.length <= LENGTHFORECHO) {
+            socket.write(chunk);
+            return;
+        }
+
+        console.log('Decode', chunk.toString('ascii'));
+    })
+
+    socket.on('error', err => {
+        console.error(`Socket ${socket.remoteAddPort} Error: ${err}`);
+        console.log('*******************');
+        console.error(err.stack);
+        console.log('*******************');
+        console.error(new Error().stack);
+    });
 })
 
 server.listen(PORT, HOST, () => {
-    //console.log(`Server running`);
     console.log(`${new Date()} listening [${server.listening}] port [${server.address().port}].`);
 })
