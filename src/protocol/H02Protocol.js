@@ -13,57 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
 
-const net = require('node:net');
+const { createServer, Server } = require('node:net');
 
-// [config] protocol
-const HOST = ''; // [config] host.
+const HOST = "0.0.0.0"; 
 const PORT = 7011;
+let counter = 0;
 
-const server = net.createServer(socket => {
-    //socket.setEncoding('utf8');
+//const server = new Server();
+const server = createServer();
 
-    socket.setTimeout(240000); // [config] 4 minutes of inactivity
-    // [log]
-    socket.remoteAddPort = `${socket.remoteAddress}:${socket.remotePort}`;
-    console.log(`Client connected ${socket.remoteAddPort}`);
+server.on('connection', socket => {
+    socket.id = counter++;
+    console.log(`New client connected ${socket.remoteAddress}:${socket.remotePort}`);
 
-    socket.on('data', (chunk) => {
-        console.log(`${new Date()} [${chunk.length}] "${chunk.toString()}"`);
+    socket.on('data', chunk => {
+        const chunkLength = chunk.length;
 
-        // echo
-        // Length of package for echo H02 protocol
-        const LENGTHFORECHO = 25;
-        if (chunk.length === LENGTHFORECHO) {
-            socket.pipe(socket);
-            return;
+        console.log(`${new Date()} [${chunkLength}] "${chunk.toString()}"`);
+
+        if (chunkLength === 25) {
+            //socket.pipe(socket);
+            socket.write(chunk);
         }
-
-        // valid data
-        console.log(chuck);
-
-    });
+    })
 
     socket.on('end', () => {
         console.log("Closing connection with the client: ", socket.address());
-    });
+    })
+})
 
-    socket.on('error', (err) => {
-        console.error(`Socket ${socket.remoteAddPort} Error: ${err}`);
-        console.log('*******************');
-        console.error(err.stack);
-        console.log('*******************');
-        console.error(new Error().stack);
-    });
-
-    socket.on('timeout', () => {
-        console.log('socket timeout');
-        socket.end();
-    });
-
-});
-
-server.listen({port:PORT, host:HOST}, () => {
+server.listen(PORT, HOST, () => {
+    //console.log(`Server running`);
     console.log(`${new Date()} listening [${server.listening}] port [${server.address().port}].`);
-});
+})
