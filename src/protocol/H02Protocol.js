@@ -51,11 +51,19 @@ server.on('connection', socket => {
     })
 
     socket.on('error', err => {
+        console.log('*******************');
         console.error(`Socket ${socket.remoteAddPort} Error: ${err}`);
-        console.log('*******************');
+        console.log('STACK:');
         console.error(err.stack);
-        console.log('*******************');
+        console.log('STACK:');
         console.error(new Error().stack);
+        console.log('*******************');
+    });
+
+    socket.on('timeout', () => {
+        //console.log('socket timeout');
+        console.log(`Socket timeout ${socket.remoteAddPort} Error: ${err}`);
+        socket.end();
     });
 })
 
