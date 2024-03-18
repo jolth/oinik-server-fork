@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Jorge Toro Hoyos (jolthgs@gmail.com)
+ * Copyright 2023 Jorge Toro Hoyos (jolthgs@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,25 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 'use strict';
 
 const { createServer } = require('node:net');
+const h02Parse = require('./H02Parse');
 
 const HOST = "0.0.0.0"; 
 const PORT = 7011;
 const TIMEOUT = 240000;
-const LENGTHFORECHO = 25;
 
 const server = createServer();
 
 server.on('connection', socket => {
-    //socket.setEncoding('utf8');
     socket.setTimeout(TIMEOUT); // [config] 4 minutes of inactivity
 
     // [log / debug]
-    //socket.remoteAddPort = `${socket.remoteAddress}:${socket.remotePort}`;
-    //console.log(`Client connected ${socket.remoteAddPort}`);
     console.log(`New client connected ${socket.remoteAddress}:${socket.remotePort}`);
 
     socket.on('end', () => {
@@ -42,27 +38,38 @@ server.on('connection', socket => {
         // [log / debug]
         console.log(`${new Date()} [${chunk.length}] "${chunk.toString('ascii')}"`);
 
-        if (chunk.length <= LENGTHFORECHO) {
-            socket.write(chunk);
-            return;
+        try {
+            const entries = new h02Parse.Entries(chunk);
+
+            switch (entries.cmd) {
+                case 'V1':
+                    console.log(entries.entries);
+                    break;
+                case 'HTBT':
+                case 'V0':
+                default:
+                    console.log(entries.entries);
+                    socket.write(chunk);
+                    return;
+            }
+        } catch (error) {
+            socket.destroy(error);
         }
 
-        console.log('Decode', chunk.toString('ascii'));
     })
 
     socket.on('error', err => {
-        console.log('*******************');
-        console.error(`Socket ${socket.remoteAddPort} Error: ${err}`);
+        console.log('*********************************************************');
+        console.error(`Socket ${socket.remoteAddPort}, ${err}`);
         console.log('STACK:');
         console.error(err.stack);
         console.log('STACK:');
         console.error(new Error().stack);
-        console.log('*******************');
+        console.log('*********************************************************');
     });
 
     socket.on('timeout', () => {
-        //console.log('socket timeout');
-        console.log(`Socket timeout ${socket.remoteAddPort} Error: ${err}`);
+        console.log(`Socket timeout: ${socket.remoteAddPort}`);
         socket.end();
     });
 })

@@ -1,0 +1,28 @@
+{
+    "fileFormat" : {
+        "charsetName" : "UTF-8",
+        "fieldsDelimitedBy" : ","
+    },
+    "formats" : {
+        "HTBT": [
+            "vendor",
+            "imei",
+            "cmd"
+        ],
+        "V1": [
+            "vendor",
+            "imei",
+            "cmd",
+            "time",
+            "dataValid",
+            "lat",
+            "latSymbol",
+            "lon",
+            "lonSymbol",
+            "speed",
+            "azimuth",
+            "date",
+            "equ_status"
+        ]
+    }
+}
