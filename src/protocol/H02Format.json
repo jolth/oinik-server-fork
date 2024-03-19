@@ -1,16 +1,16 @@
 {
     "fileFormat" : {
-        "charsetName" : "UTF-8",
+        "charsetName" : "ascii",
         "fieldsDelimitedBy" : ","
     },
     "formats" : {
         "BASE": [
-            "vendor",
+            "header",
             "imei",
             "cmd"
         ],
         "V1": [
-            "vendor",
+            "header",
             "imei",
             "cmd",
             "time",
