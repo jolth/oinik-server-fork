@@ -30,7 +30,6 @@ class Entries {
         if (chunk[chunk.length - 1] === 0x23) {
             return chunk.subarray(0, chunk.length - 1);
         } else {
-            // bad
             throw new Error('The packet is not an h02 protocol');
         }
     }
@@ -50,10 +49,15 @@ class Entries {
     }
 
     _entries(cmd) {
-        //return Object.entries(
-        return Object.fromEntries(
-            this._mem.map((e, i) => [jsonFormat.formats[cmd][i], e])
-        );
+        if (this.cmd in jsonFormat.formats) {
+            return Object.fromEntries(
+                this._mem.map((e, i) => [jsonFormat.formats[cmd][i], e])
+            );
+        } else {
+            return Object.fromEntries(
+                this._mem.map((e, i) => [jsonFormat.formats['BASE']?.[i], e])
+            );
+        }
     }
 }
 
@@ -63,5 +67,9 @@ module.exports = {
 
 //const e = new Entries(Buffer.from("*HQ,869731054158803,HTBT#"));
 //const e = new Entries(Buffer.from("*HQ,869731054158803,V1,145655,A,0502.30446,N,07527.53997,W,000.00,135,160324,FFFFFBFF#"));
+//const e = new Entries(Buffer.from('*HQ,869731054158803,TIME#'));
+//const e = new Entries(Buffer.from('*HQ,869731054158803,ICCID,89571016025059771124#'));
 //console.log(e.cmd);
+//console.log(e._mem);
+//console.log(e.cmd in jsonFormat.formats);
 //console.log(e.entries);

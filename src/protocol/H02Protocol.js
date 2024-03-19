@@ -38,6 +38,8 @@ server.on('connection', socket => {
         // [log / debug]
         console.log(`${new Date()} [${chunk.length}] "${chunk.toString('ascii')}"`);
 
+        socket._chunk = chunk;
+
         try {
             const entries = new h02Parse.Entries(chunk);
 
@@ -48,6 +50,7 @@ server.on('connection', socket => {
                 case 'HTBT':
                 case 'V0':
                 default:
+                //    console.log('CMD:', entries.cmd);
                     console.log(entries.entries);
                     socket.write(chunk);
                     return;
@@ -60,6 +63,7 @@ server.on('connection', socket => {
 
     socket.on('error', err => {
         console.log('*********************************************************');
+        console.log('CHUNK:', socket._chunk.toString('ascii'));
         console.error(`Socket ${socket.remoteAddPort}, ${err}`);
         console.log('STACK:');
         console.error(err.stack);
