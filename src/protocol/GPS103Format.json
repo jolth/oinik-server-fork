@@ -1,0 +1,57 @@
+{
+    "fileFormat" : {
+        "charsetName" : "ascii",
+        "fieldsDelimitedBy" : ","
+    },
+    "formats" : {
+        "A": [
+            "header",
+            "imei",
+            "cmd"
+        ],
+        "HTBT": [
+            "imei"
+        ],
+        "STATUS": [
+            "imei",
+            "cmd"
+        ],
+        "PROTOCOL12": [  
+            "imei",
+            "cmd",
+            "datetime",
+            "cellNumber",
+            "dataValid1",
+            "timeZoneUTC0",
+            "dataValid2",
+            "lat",
+            "latSymbol",
+            "lon",
+            "lonSymbol",
+            "speed",
+            "azimuth",
+            "altitude"
+        ],
+        "PROTOCOL18": [  
+            "imei",
+            "cmd",
+            "datetime",
+            "cellNumber",
+            "dataValid1",
+            "timeZoneUTC0",
+            "dataValid2",
+            "lat",
+            "latSymbol",
+            "lon",
+            "lonSymbol",
+            "speed",
+            "azimuth",
+            "altitude",
+            "acc",
+            "door",
+            "percentFuelTank1",
+            "percentFuelTank2",
+            "temp"
+        ]
+    }
+}
