@@ -36,69 +36,28 @@ server.on('connection', socket => {
 
     socket.on('data', chunk => {
         // [log / debug]
-        //console.log(`${new Date()} [${chunk.length}] "${chunk.toString('ascii')}"`);
+        console.log(`${new Date()} [${chunk.length}] "${chunk.toString('ascii')}"`);
 
         socket._chunk = chunk;
-
-        /*
-        // echo logging 
-        if (chunk.toString('ascii') === '##,imei:864035051888395,A;') {
-        //if ( chunk.length === 26 ) {
-            console.log('ECHO Logging');
-            socket.write('LOAD');
-        }
-
-        // echo Heartbeat-packets
-        if (chunk.toString('ascii') === '864035051888395;') {
-            //if ( chunk.length < 26 ) {
-            console.log("ECHO Heartbeat");
-            socket.write('ON');
-        }
-        */
 
         try {
             const entries = new GPS103Parse.Entries(chunk);
             switch (entries.cmd) {
                 case 'A':
-                    console.log('LOGIN');
                     socket.write('LOAD');
-                    //console.log(`${new Date()} [${chunk.length}] "${chunk.toString('ascii')}"`);
                     console.log(entries.entries);
                     break;
                 case 'HTBT':
-                    console.log('Heartbeat');
                     socket.write('ON');
-                    //console.log(`${new Date()} [${chunk.length}] "${chunk.toString('ascii')}"`);
                     console.log(entries.entries);
                     break;
                 default: // 'tracker', 'status', etc.
-                    console.log('Device Message');
-                    //console.log(`${new Date()} [${chunk.length}] "${chunk.toString('ascii')}"`);
                     console.log(entries.entries);
                     break;
             }
         } catch (error) {
             socket.destroy(error);
         }
-
-        //try {
-        //    const entries = new h02Parse.Entries(chunk);
-
-        //    switch (entries.cmd) {
-        //        case 'V1':
-        //            console.log(entries.entries);
-        //            break;
-        //        case 'HTBT':
-        //        case 'V0':
-        //        default:
-        //            console.log(entries.entries);
-        //            socket.write(chunk);
-        //            return;
-        //    }
-        //} catch (error) {
-        //    socket.destroy(error);
-        //}
-
     })
 
     socket.on('error', err => {

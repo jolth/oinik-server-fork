@@ -62,16 +62,12 @@ class Entries {
     }
 
     _entries(cmd) {
-        //return Object.fromEntries(
-        //    this._mem.map((e, i) => [jsonFormat.formats[cmd][i], e])
-        //);
         if (this.cmd in jsonFormat.formats) {
             return Object.fromEntries(
                 this._mem.map((e, i) => [jsonFormat.formats[cmd]?.[i], e])
             );
         } else {
             return Object.fromEntries(
-                //this._mem.map((e, i) => [jsonFormat.formats['PROTOCOL18']?.[i], e])
                 this._mem.map((e, i) => [`para${i+1}`, e])
             );
         }
