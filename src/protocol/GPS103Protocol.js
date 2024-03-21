@@ -16,7 +16,7 @@
 'use strict';
 
 const { createServer } = require('node:net');
-//const h02Parse = require('./H02Parse');
+const GPS103Parse = require('./GPS103Parse');
 
 const HOST = "0.0.0.0"; 
 const PORT = 7012;
@@ -36,10 +36,11 @@ server.on('connection', socket => {
 
     socket.on('data', chunk => {
         // [log / debug]
-        console.log(`${new Date()} [${chunk.length}] "${chunk.toString('ascii')}"`);
+        //console.log(`${new Date()} [${chunk.length}] "${chunk.toString('ascii')}"`);
 
         socket._chunk = chunk;
 
+        /*
         // echo logging 
         if (chunk.toString('ascii') === '##,imei:864035051888395,A;') {
         //if ( chunk.length === 26 ) {
@@ -49,9 +50,35 @@ server.on('connection', socket => {
 
         // echo Heartbeat-packets
         if (chunk.toString('ascii') === '864035051888395;') {
-        //if ( chunk.length < 26 ) {
+            //if ( chunk.length < 26 ) {
             console.log("ECHO Heartbeat");
             socket.write('ON');
+        }
+        */
+
+        try {
+            const entries = new GPS103Parse.Entries(chunk);
+            switch (entries.cmd) {
+                case 'A':
+                    console.log('LOGIN');
+                    socket.write('LOAD');
+                    //console.log(`${new Date()} [${chunk.length}] "${chunk.toString('ascii')}"`);
+                    console.log(entries.entries);
+                    break;
+                case 'HTBT':
+                    console.log('Heartbeat');
+                    socket.write('ON');
+                    //console.log(`${new Date()} [${chunk.length}] "${chunk.toString('ascii')}"`);
+                    console.log(entries.entries);
+                    break;
+                default: // 'tracker', 'status', etc.
+                    console.log('Device Message');
+                    //console.log(`${new Date()} [${chunk.length}] "${chunk.toString('ascii')}"`);
+                    console.log(entries.entries);
+                    break;
+            }
+        } catch (error) {
+            socket.destroy(error);
         }
 
         //try {
