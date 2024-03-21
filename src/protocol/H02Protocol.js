@@ -45,12 +45,12 @@ server.on('connection', socket => {
 
             switch (entries.cmd) {
                 case 'V1':
-                    console.log('%j', entries.entries);
+                    console.log(entries.entries);
                     break;
                 case 'HTBT':
                 case 'V0':
                 default:
-                    console.log('%j', entries.entries);
+                    console.log(entries.entries);
                     socket.write(chunk);
                     return;
             }

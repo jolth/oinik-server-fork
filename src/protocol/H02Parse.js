@@ -55,7 +55,7 @@ class Entries {
             );
         } else {
             return Object.fromEntries(
-                this._mem.map((e, i) => [jsonFormat.formats['BASE']?.[i], e])
+                this._mem.map((e, i) => [jsonFormat.formats['BASE']?.[i] || `para${i-2}`, e])
             );
         }
     }
@@ -65,11 +65,9 @@ module.exports = {
     Entries
 }
 
-//const e = new Entries(Buffer.from("*HQ,869731054158803,HTBT#"));
-//const e = new Entries(Buffer.from("*HQ,869731054158803,V1,145655,A,0502.30446,N,07527.53997,W,000.00,135,160324,FFFFFBFF#"));
-//const e = new Entries(Buffer.from('*HQ,869731054158803,TIME#'));
-//const e = new Entries(Buffer.from('*HQ,869731054158803,ICCID,89571016025059771124#'));
-//console.log(e.cmd);
-//console.log(e._mem);
-//console.log(e.cmd in jsonFormat.formats);
-//console.log(e.entries);
+//const e1 = new Entries(Buffer.from("*HQ,869731054158803,HTBT#"));
+//const e2 = new Entries(Buffer.from("*HQ,869731054158803,V1,145655,A,0502.30446,N,07527.53997,W,000.00,135,160324,FFFFFBFF#"));
+//const e3 = new Entries(Buffer.from('*HQ,869731054158803,TIME#'));
+//const e4 = new Entries(Buffer.from('*HQ,869731054158803,ICCID,89571016025059771124#'));
+//const e = [e1,e2,e3,e4];
+//e.forEach(e => console.log(e.cmd, e.entries));
