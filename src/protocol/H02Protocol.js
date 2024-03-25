@@ -13,20 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-'use strict';
+'use strict'
 
-const { createServer } = require('node:net');
-const h02Parse = require('./H02Parse');
+import { Protocol } from './BaseProtocol.js'
+import { Entries } from './H02Parse.js';
 
-const HOST = "0.0.0.0"; 
-const PORT = 7011;
+const HOST = "0.0.0.0";
+const PORT = 17011;
 const TIMEOUT = 240000;
 
-const server = createServer();
+const server = new Protocol(PORT, HOST);
 
-server.on('connection', socket => {
+server.on('connection', (socket) => {
     socket.setTimeout(TIMEOUT); // [config] 4 minutes of inactivity
-
     // [log / debug]
     console.log(`New client connected ${socket.remoteAddress}:${socket.remotePort}`);
 
@@ -41,7 +40,7 @@ server.on('connection', socket => {
         socket._chunk = chunk;
 
         try {
-            const entries = new h02Parse.Entries(chunk);
+            const entries = new Entries(chunk);
 
             switch (entries.cmd) {
                 case 'V1':
@@ -75,8 +74,4 @@ server.on('connection', socket => {
         console.log(`Socket timeout: ${socket.remoteAddPort}`);
         socket.end();
     });
-})
-
-server.listen(PORT, HOST, () => {
-    console.log(`${new Date()} listening [${server.listening}] port [${server.address().port}].`);
 })
