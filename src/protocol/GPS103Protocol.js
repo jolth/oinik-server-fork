@@ -15,18 +15,17 @@
  */
 'use strict';
 
-const { createServer } = require('node:net');
-const GPS103Parse = require('./GPS103Parse');
+import { Protocol } from './BaseProtocol.js';
+import { Entries } from './GPS103Parse.js'; 
 
 const HOST = "0.0.0.0"; 
-const PORT = 7012;
+const PORT = 17021;
 const TIMEOUT = 240000;
 
-const server = createServer();
+const server = new Protocol(PORT, HOST);
 
 server.on('connection', socket => {
     socket.setTimeout(TIMEOUT); // [config] 4 minutes of inactivity
-
     // [log / debug]
     console.log(`New client connected ${socket.remoteAddress}:${socket.remotePort}`);
 
@@ -41,7 +40,7 @@ server.on('connection', socket => {
         socket._chunk = chunk;
 
         try {
-            const entries = new GPS103Parse.Entries(chunk);
+            const entries = new Entries(chunk);
             switch (entries.cmd) {
                 case 'A':
                     socket.write('LOAD');
@@ -75,8 +74,4 @@ server.on('connection', socket => {
         console.log(`Socket timeout: ${socket.remoteAddPort}`);
         socket.end();
     });
-})
-
-server.listen(PORT, HOST, () => {
-    console.log(`${new Date()} listening [${server.listening}] port [${server.address().port}].`);
 })

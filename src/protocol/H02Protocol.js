@@ -41,7 +41,6 @@ server.on('connection', (socket) => {
 
         try {
             const entries = new Entries(chunk);
-
             switch (entries.cmd) {
                 case 'V1':
                     console.log(entries.entries);

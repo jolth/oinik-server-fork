@@ -14,13 +14,17 @@
  * limitations under the License.
  */
 'use strict';
-const { readFileSync } = require('node:fs');
-const { join } = require('node:path');
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const END = 0x3b;
 
 const jsonFormat = JSON.parse(
-    readFileSync(join(__dirname, 'GPS103Format.json'))
+    readFileSync(path.join(__dirname, 'GPS103Format.json'))
 );
 
 class Entries {
@@ -74,7 +78,7 @@ class Entries {
     }
 }
 
-module.exports = {
+export {
     Entries
 }
 

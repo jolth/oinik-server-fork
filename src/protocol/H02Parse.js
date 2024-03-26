@@ -22,6 +22,8 @@ import { fileURLToPath } from 'node:url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+const END = 0x23;
+
 const jsonFormat = JSON.parse(
     readFileSync(path.join(__dirname, 'H02Format.json'))
 );
@@ -32,7 +34,7 @@ class Entries {
     }
 
     _parse(chunk) {
-        if (chunk[chunk.length - 1] === 0x23) {
+        if (chunk[chunk.length - 1] === END) {
             return chunk.subarray(0, chunk.length - 1);
         } else {
             throw new Error('The packet is not an h02 protocol');
