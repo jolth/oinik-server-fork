@@ -71,7 +71,7 @@ server.on('connection', (socket) => {
     socket.on('error', err => {
         console.log('*********************************************************');
         console.log('CHUNK:', socket._chunk.toString('ascii'));
-        console.error(`Socket ${socket.remoteAddPort}, ${err}`);
+        console.error(`Socket ${socket.remoteAddress}:${socket.remotePort}, ${err}`);
         console.log('STACK:');
         console.error(err.stack);
         console.log('STACK:');
@@ -80,7 +80,7 @@ server.on('connection', (socket) => {
     });
 
     socket.on('timeout', () => {
-        console.log(`Socket timeout: ${socket.remoteAddPort}`);
+        console.log(`Socket timeout: ${socket.remoteAddress}:${socket.remotePort}`);
         socket.end();
     });
 })
