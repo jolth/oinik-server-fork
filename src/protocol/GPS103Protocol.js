@@ -35,28 +35,43 @@ server.on('connection', socket => {
 
     socket.on('data', chunk => {
         // [log / debug]
-        console.log(`${new Date()} [${chunk.length}] "${chunk.toString('ascii')}"`);
+        //console.log(`${new Date()} [${chunk.length}] "${chunk.toString('ascii')}"`);
 
         socket._chunk = chunk;
+        socket.emit('parse', chunk); 
+    })
 
+    socket.on('parse', (chunk) => {
         try {
             const entries = new Entries(chunk);
             switch (entries.cmd) {
                 case 'A':
-                    socket.write('LOAD');
-                    console.log(entries.entries);
+                    //socket.write('LOAD');
+                    //console.log(entries.entries);
+                    socket.emit('echo', 'LOAD', entries.entries);
                     break;
                 case 'HTBT':
-                    socket.write('ON');
-                    console.log(entries.entries);
+                    //socket.write('ON');
+                    //console.log(entries.entries);
+                    socket.emit('echo', 'ON', entries.entries);
                     break;
                 default: // 'tracker', 'status', etc.
-                    console.log(entries.entries);
+                    //console.log(entries.entries);
+                    socket.emit('decode', entries.entries)
                     break;
             }
         } catch (error) {
             socket.destroy(error);
         }
+    })
+
+    socket.on('decode', (entries) => {
+        console.table(entries);
+    })
+
+    socket.on('echo', (message, entries) => {
+        console.log(entries);
+        socket.write(message);
     })
 
     socket.on('error', err => {
