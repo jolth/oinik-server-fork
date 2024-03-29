@@ -57,13 +57,17 @@ class Entries {
 
     _entries(cmd) {
         if (this.cmd in jsonFormat.formats) {
-            return Object.fromEntries(
+            const entries = Object.fromEntries(
                 this._mem.map((e, i) => [jsonFormat.formats[cmd][i], e])
             );
+            entries['datetimeArrival'] = new Date();
+            return entries;
         } else {
-            return Object.fromEntries(
+            const entries = Object.fromEntries(
                 this._mem.map((e, i) => [jsonFormat.formats['BASE']?.[i] || `para${i-2}`, e])
             );
+            entries['datetimeArrival'] = new Date();
+            return entries;
         }
     }
 }

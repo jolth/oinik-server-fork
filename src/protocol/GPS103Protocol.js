@@ -66,7 +66,7 @@ server.on('connection', socket => {
     })
 
     socket.on('decode', (entries) => {
-        console.table(entries);
+        console.log(entries);
     })
 
     socket.on('echo', (message, entries) => {
