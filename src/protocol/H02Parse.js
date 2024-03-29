@@ -28,7 +28,7 @@ const jsonFormat = JSON.parse(
     readFileSync(path.join(__dirname, 'H02Format.json'))
 );
 
-class Entries {
+class Frame {
     constructor(chunk) {
         this._mem = this._split(chunk, ',');
     }
@@ -73,12 +73,12 @@ class Entries {
 }
 
 export {
-    Entries
+   Frame 
 }
 
-//const e1 = new Entries(Buffer.from("*HQ,869731054158803,HTBT#"));
-//const e2 = new Entries(Buffer.from("*HQ,869731054158803,V1,145655,A,0502.30446,N,07527.53997,W,000.00,135,160324,FFFFFBFF#"));
-//const e3 = new Entries(Buffer.from('*HQ,869731054158803,TIME#'));
-//const e4 = new Entries(Buffer.from('*HQ,869731054158803,ICCID,89571016025059771124#'));
+//const e1 = new Frame(Buffer.from("*HQ,869731054158803,HTBT#"));
+//const e2 = new Frame(Buffer.from("*HQ,869731054158803,V1,145655,A,0502.30446,N,07527.53997,W,000.00,135,160324,FFFFFBFF#"));
+//const e3 = new Frame(Buffer.from('*HQ,869731054158803,TIME#'));
+//const e4 = new Frame(Buffer.from('*HQ,869731054158803,ICCID,89571016025059771124#'));
 //const e = [e1,e2,e3,e4];
 //e.forEach(e => console.log(e.cmd, e.entries));

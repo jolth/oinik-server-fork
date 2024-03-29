@@ -16,7 +16,7 @@
 'use strict';
 
 import { Protocol } from './BaseProtocol.js';
-import { Entries } from './GPS103Parse.js'; 
+import { Frame } from './GPS103Parse.js'; 
 
 const HOST = "0.0.0.0"; 
 const PORT = 17021;
@@ -43,21 +43,21 @@ server.on('connection', socket => {
 
     socket.on('parse', (chunk) => {
         try {
-            const entries = new Entries(chunk);
-            switch (entries.cmd) {
+            const frame = new Frame(chunk);
+            switch (frame.cmd) {
                 case 'A':
                     //socket.write('LOAD');
                     //console.log(entries.entries);
-                    socket.emit('echo', 'LOAD', entries.entries);
+                    socket.emit('echo', 'LOAD', frame.entries);
                     break;
                 case 'HTBT':
                     //socket.write('ON');
                     //console.log(entries.entries);
-                    socket.emit('echo', 'ON', entries.entries);
+                    socket.emit('echo', 'ON', frame.entries);
                     break;
                 default: // 'tracker', 'status', etc.
                     //console.log(entries.entries);
-                    socket.emit('decode', entries.entries)
+                    socket.emit('decode', frame.entries)
                     break;
             }
         } catch (error) {

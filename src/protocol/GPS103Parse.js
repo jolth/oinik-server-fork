@@ -27,7 +27,7 @@ const jsonFormat = JSON.parse(
     readFileSync(path.join(__dirname, 'GPS103Format.json'))
 );
 
-class Entries {
+class Frame {
     constructor(chunk) {
         this._mem = this._split(chunk, ',');
     }
@@ -84,16 +84,16 @@ class Entries {
 }
 
 export {
-    Entries
+    Frame
 }
 
-//const e1 = new Entries(Buffer.from("##,imei:864035051888395,A;"))
-//const e2 = new Entries(Buffer.from("imei:864035051888395,status,120,0,0,0,0,0,0.00,1;"))
-//const e3 = new Entries(Buffer.from("864035051888395;"))
-//const e4 = new Entries(Buffer.from("imei:864035051888395,tracker,240319175704,,L,,,714f,,aab67c8,,,;"))
-//const e5 = new Entries(Buffer.from("imei:864035051888395,tracker,240319182233,,F,182233.000,A,0502.30139,N,07527.53972,W,6.55,46.88;"))
-//const e6 = new Entries(Buffer.from("imei:864035051888395,tracker,240319183026,,L,,,714f,,aab67c8,,,,,0,0,0.00%,,;"))
-//const e7 = new Entries(Buffer.from("imei:864035051888395,tracker,240319184738,,F,184738.000,A,0502.29946,N,07527.53964,W,6.43,171.11,,0,0,0.00%,,;"))
+//const e1 = new Frame(Buffer.from("##,imei:864035051888395,A;"))
+//const e2 = new Frame(Buffer.from("imei:864035051888395,status,120,0,0,0,0,0,0.00,1;"))
+//const e3 = new Frame(Buffer.from("864035051888395;"))
+//const e4 = new Frame(Buffer.from("imei:864035051888395,tracker,240319175704,,L,,,714f,,aab67c8,,,;"))
+//const e5 = new Frame(Buffer.from("imei:864035051888395,tracker,240319182233,,F,182233.000,A,0502.30139,N,07527.53972,W,6.55,46.88;"))
+//const e6 = new Frame(Buffer.from("imei:864035051888395,tracker,240319183026,,L,,,714f,,aab67c8,,,,,0,0,0.00%,,;"))
+//const e7 = new Frame(Buffer.from("imei:864035051888395,tracker,240319184738,,F,184738.000,A,0502.29946,N,07527.53964,W,6.43,171.11,,0,0,0.00%,,;"))
 //const t = [e1,e2,e3,e4,e5,e6,e7]
 //t.forEach((e) => console.log(e._mem.length, e._mem))
 //t.forEach((e) => console.log(e.cmd))

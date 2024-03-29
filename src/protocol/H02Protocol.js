@@ -16,7 +16,7 @@
 'use strict'
 
 import { Protocol } from './BaseProtocol.js'
-import { Entries } from './H02Parse.js';
+import { Frame } from './H02Parse.js';
 
 const HOST = "0.0.0.0";
 const PORT = 17011;
@@ -43,15 +43,15 @@ server.on('connection', (socket) => {
 
     socket.on('parse', (chunk) => {
         try {
-            const entries = new Entries(chunk);
-            switch (entries.cmd) {
+            const frame = new Frame(chunk);
+            switch (frame.cmd) {
                 case 'V1':
-                    socket.emit('decode', entries.entries);
+                    socket.emit('decode', frame.entries);
                     break;
                 case 'HTBT':
                 case 'V0':
                 default:
-                    socket.emit('echo', chunk, entries.entries);
+                    socket.emit('echo', chunk, frame.entries);
                     return;
             }
         } catch (error) {
