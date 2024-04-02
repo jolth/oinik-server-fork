@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-'use strict';
+"use strict";
 
-import { Protocol } from './BaseProtocol.js';
-import { Frame } from './GPS103Parse.js'; 
+import { Protocol } from "./BaseProtocol.js";
+import { Frame } from "./GPS103Parse.js"; 
 
 const HOST = "0.0.0.0"; 
 const PORT = 17021;
@@ -24,69 +24,69 @@ const TIMEOUT = 240000;
 
 const server = new Protocol(PORT, HOST);
 
-server.on('connection', socket => {
+server.on("connection", socket => {
     socket.setTimeout(TIMEOUT); // [config] 4 minutes of inactivity
     // [log / debug]
     console.log(`New client connected ${socket.remoteAddress}:${socket.remotePort}`);
 
-    socket.on('end', () => {
+    socket.on("end", () => {
         console.log("Closing connection with the client: ", socket.address());
-    })
+    });
 
-    socket.on('data', chunk => {
+    socket.on("data", chunk => {
         // [log / debug]
-        //console.log(`${new Date()} [${chunk.length}] "${chunk.toString('ascii')}"`);
+        //console.log(`${new Date()} [${chunk.length}] "${chunk.toString("ascii")}"`);
 
         socket._chunk = chunk;
-        socket.emit('parse', chunk); 
-    })
+        socket.emit("parse", chunk); 
+    });
 
-    socket.on('parse', (chunk) => {
+    socket.on("parse", (chunk) => {
         try {
             const frame = new Frame(chunk);
             switch (frame.cmd) {
-                case 'A':
-                    //socket.write('LOAD');
+                case "A":
+                    //socket.write("LOAD");
                     //console.log(entries.entries);
-                    socket.emit('echo', 'LOAD', frame.entries);
+                    socket.emit("echo", "LOAD", frame.entries);
                     break;
-                case 'HTBT':
-                    //socket.write('ON');
+                case "HTBT":
+                    //socket.write("ON");
                     //console.log(entries.entries);
-                    socket.emit('echo', 'ON', frame.entries);
+                    socket.emit("echo", "ON", frame.entries);
                     break;
-                default: // 'tracker', 'status', etc.
+                default: // "tracker", "status", etc.
                     //console.log(entries.entries);
-                    socket.emit('decode', frame.entries)
+                    socket.emit("decode", frame.entries);
                     break;
             }
         } catch (error) {
             socket.destroy(error);
         }
-    })
-
-    socket.on('decode', (entries) => {
-        console.log(entries);
-    })
-
-    socket.on('echo', (message, entries) => {
-        console.log(entries);
-        socket.write(message);
-    })
-
-    socket.on('error', err => {
-        console.log('*********************************************************');
-        console.log('CHUNK:', socket._chunk.toString('ascii'));
-        console.error(`Socket ${socket.remoteAddress}:${socket.remotePort}, ${err}`);
-        console.log('STACK:');
-        console.error(err.stack);
-        console.log('STACK:');
-        console.error(new Error().stack);
-        console.log('*********************************************************');
     });
 
-    socket.on('timeout', () => {
+    socket.on("decode", (entries) => {
+        console.log(entries);
+    });
+
+    socket.on("echo", (message, entries) => {
+        console.log(entries);
+        socket.write(message);
+    });
+
+    socket.on("error", err => {
+        console.log("*********************************************************");
+        console.log("CHUNK:", socket._chunk.toString("ascii"));
+        console.error(`Socket ${socket.remoteAddress}:${socket.remotePort}, ${err}`);
+        console.log("STACK:");
+        console.error(err.stack);
+        console.log("STACK:");
+        console.error(new Error().stack);
+        console.log("*********************************************************");
+    });
+
+    socket.on("timeout", () => {
         console.log(`Socket timeout: ${socket.remoteAddress}:${socket.remotePort}`);
         socket.end();
     });
-})
+});

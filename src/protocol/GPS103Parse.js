@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-'use strict';
-import { readFileSync } from 'node:fs';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+"use strict";
+import { readFileSync } from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -24,23 +24,23 @@ const __dirname = path.dirname(__filename);
 const END = 0x3b;
 
 const jsonFormat = JSON.parse(
-    readFileSync(path.join(__dirname, 'GPS103Format.json'))
+    readFileSync(path.join(__dirname, "GPS103Format.json"))
 );
 
 class Frame {
     constructor(chunk) {
-        this._mem = this._split(chunk, ',');
+        this._mem = this._split(chunk, ",");
     }
 
     _parse(chunk) {
         if (chunk[chunk.length - 1] === END) {
             return chunk.subarray(0, chunk.length - 1);
         } else {
-            throw new Error('The packet is not an GPS103 protocol');
+            throw new Error("The packet is not an GPS103 protocol");
         }
     }
 
-    _split(chunk, separator, encoding='ascii') {
+    _split(chunk, separator, encoding="ascii") {
         return this._parse(chunk)
             .toString(encoding)
             .split(separator);
@@ -49,15 +49,15 @@ class Frame {
     get cmd() {
         switch (this._mem.length) {
             case 1: // Heartbeat
-                return 'HTBT';
+                return "HTBT";
             case 3: // Device Login
                 return this._mem[2];
             case 10: // status
-                //return 'STATUS';
+                //return "STATUS";
                 return this._mem[1];
             default: // Device Message
                 //return this._mem[1];
-                return 'PROTOCOL18';
+                return "PROTOCOL18";
         }
     }
 
@@ -70,13 +70,13 @@ class Frame {
             const entries = Object.fromEntries(
                 this._mem.map((e, i) => [jsonFormat.formats[cmd]?.[i], e])
             );
-            entries['datetimeArrival'] = new Date();
+            entries["datetimeArrival"] = new Date();
             return entries;
         } else {
             const entries = Object.fromEntries(
                 this._mem.map((e, i) => [`para${i+1}`, e])
             );
-            entries['datetimeArrival'] = new Date();
+            entries["datetimeArrival"] = new Date();
             return entries;
 
         }
