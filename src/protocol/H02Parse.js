@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Jorge Toro Hoyos (jolthgs@gmail.com)
+ * Copyright 2024 Jorge Toro Hoyos (jolthgs@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,55 +25,55 @@ const __dirname = path.dirname(__filename);
 const END = 0x23;
 
 const jsonFormat = JSON.parse(
-    readFileSync(path.join(__dirname, "H02Format.json"))
+  readFileSync(path.join(__dirname, "H02Format.json"))
 );
 
 class Frame {
-    constructor(chunk) {
-        this._mem = this._split(chunk, ",");
-    }
+  constructor(chunk) {
+    this._mem = this._split(chunk, ",");
+  }
 
-    _parse(chunk) {
-        if (chunk[chunk.length - 1] === END) {
-            return chunk.subarray(0, chunk.length - 1);
-        } else {
-            throw new Error("The packet is not an h02 protocol");
-        }
+  _parse(chunk) {
+    if (chunk[chunk.length - 1] === END) {
+      return chunk.subarray(0, chunk.length - 1);
+    } else {
+      throw new Error("The packet is not an h02 protocol");
     }
+  }
 
-    _split(chunk, separator, encoding="ascii") {
-        return this._parse(chunk)
-            .toString(encoding)
-            .split(separator);
-    }
+  _split(chunk, separator, encoding="ascii") {
+    return this._parse(chunk)
+      .toString(encoding)
+      .split(separator);
+  }
 
-    get cmd() {
-        return this._mem[2];
-    }
+  get cmd() {
+    return this._mem[2];
+  }
 
-    get entries() {
-        return this._entries(this.cmd);
-    }
+  get entries() {
+    return this._entries(this.cmd);
+  }
 
-    _entries(cmd) {
-        if (this.cmd in jsonFormat.formats) {
-            const entries = Object.fromEntries(
-                this._mem.map((e, i) => [jsonFormat.formats[cmd][i], e])
-            );
-            entries["datetimeArrival"] = new Date();
-            return entries;
-        } else {
-            const entries = Object.fromEntries(
-                this._mem.map((e, i) => [jsonFormat.formats["BASE"]?.[i] || `para${i-2}`, e])
-            );
-            entries["datetimeArrival"] = new Date();
-            return entries;
-        }
+  _entries(cmd) {
+    if (this.cmd in jsonFormat.formats) {
+      const entries = Object.fromEntries(
+        this._mem.map((e, i) => [jsonFormat.formats[cmd][i], e])
+      );
+      entries["datetimeArrival"] = new Date();
+      return entries;
+    } else {
+      const entries = Object.fromEntries(
+        this._mem.map((e, i) => [jsonFormat.formats["BASE"]?.[i] || `para${i-2}`, e])
+      );
+      entries["datetimeArrival"] = new Date();
+      return entries;
     }
+  }
 }
 
 export {
-   Frame 
+  Frame 
 };
 
 //const e1 = new Frame(Buffer.from("*HQ,869731054158803,HTBT#"));
