@@ -13,8 +13,10 @@
   },
   "APIs": {
       "storage" : {
+          "protocol": "http",
           "host": "0.0.0.0",
-          "port": 15000
+          "port": 15000,
+          "pathname": "/devices"
       }
   }
 }

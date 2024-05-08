@@ -21,6 +21,7 @@
   "dependencies": {
     "config": "^3.3.11",
     "date-fns-tz": "^2.0.1",
+    "node-fetch": "^3.3.2",
     "pino": "^9.0.0",
     "pino-pretty": "^11.0.0"
   },
