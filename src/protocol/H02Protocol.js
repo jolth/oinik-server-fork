@@ -18,6 +18,7 @@ import { Frame } from "./H02Parse.js";
 import { H02Entries } from "./H02Decode.js";
 import logger from "../logger.js";
 import config from "config";
+import * as storage from "../api/storage.js";
 
 const h02Config = config.get("Protocols.h02");
 
@@ -56,15 +57,18 @@ server.on("connection", (socket) => {
           } else {
             //console.log("Frame: Data Invalid");
             // Save IMEI connection
-            socket.emit("store", false, frame.entries);
+            // Save hexStatus of invalidConnection
+            // invalidConnection - It could arrive as cached data on the device.
+            socket.emit("store", "invalidConnection", frame.entries);
           }
           return;
         case "HTBT":
         case "V0":
         default:
-          socket.emit("echo", chunk, frame.entries);
+          //socket.emit("echo", chunk, frame.entries);
+          socket.emit("echo", chunk);
           // Save IMEI connection
-          socket.emit("store", false, frame.entries);
+          socket.emit("store", "heartbeatConnection", frame.entries); // heartbeat
           return;
       }
     } catch (error) {
@@ -77,6 +81,7 @@ server.on("connection", (socket) => {
 
     h02.on("error", (err) => {
       console.error(err);
+      //socket.emit("error", err);
     });
 
     h02.on("decoded", (status) => {
@@ -84,18 +89,57 @@ server.on("connection", (socket) => {
     });
   });
 
-  socket.on("echo", (message, entries) => {
+  socket.on("echo", (message) => {
+  //socket.on("echo", (message, entries) => {
     //console.log("ECHO");
     //console.log(entries);
     socket.write(message);
   });
 
   socket.on("store", (type, entries) => {
-    if (type) {
-      console.log(`stores POSITION: ${entries}`);
-    } else {
-      console.log(`stores CONNECTION: [${entries.imei}, ${entries.datetimeArrival}]`);
+
+    const typeStorage = {
+      "heartbeatConnection": storage.updateDevice,
+      "position": null,
+    };
+
+    const store = typeStorage[type]({ imei: entries.imei });
+    store.write(JSON.stringify({ last_connectz: entries.datetimeArrival }));
+    store.end();
+
+    store.on("error", (err) => {
+      socket.emit("error", err);
+    });
+      
+
+    /*
+    const typeStorage = {
+      "heartbeatConnection": storage.updateDevice,
+      "position": null,
+    };
+
+    try {
+      const key = {
+        imei: entries.imei
+      };
+      const body = {
+        last_connectz: entries.datetimeArrival
+      };
+      typeStorage[type](key, body);
+      //typeStorage[type]( { imei: entries.imei },
+      //  { last_connectz: entries.datetimeArrival } );
+    } catch (error) {
+      // Mejorar esto
+      console.error("ERROR IN Storage Socket");
+      socket.emit("error", error);
     }
+    */
+
+    //if (type) {
+    //  console.log(`stores POSITION: ${entries}`);
+    //} else {
+    //  console.log(`stores CONNECTION: [${entries.imei}, ${entries.datetimeArrival}]`);
+    //}
   });
 
   socket.on("error", err => {
