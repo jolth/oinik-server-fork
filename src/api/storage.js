@@ -1,7 +1,7 @@
 import config from "config";
 import http from "node:http";
 
-const storage = config.get("APIs.storage");
+const storage = config.get("API.storage");
 
 /*
  * Receives the "key" object to which an "id" or "imei" and
