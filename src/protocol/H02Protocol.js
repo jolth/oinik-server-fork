@@ -52,15 +52,13 @@ server.on("connection", (socket) => {
       const frame = new Frame(chunk);
       switch (frame.cmd) {
         case "V1":
-          if (frame.entries.dataValid === "A") { // data is valid?
-            socket.emit("decode", frame.entries);
-          } else {
-            //console.log("Frame: Data Invalid");
+          if (!frame.entries.dataValid) {
             // Save IMEI connection
             // Save hexStatus of invalidConnection
             // invalidConnection - It could arrive as cached data on the device.
             socket.emit("store", "invalidConnection", frame.entries);
           }
+          socket.emit("decode", frame.entries);
           return;
         case "HTBT":
         case "V0":
@@ -90,7 +88,7 @@ server.on("connection", (socket) => {
   });
 
   socket.on("echo", (message) => {
-  //socket.on("echo", (message, entries) => {
+    //socket.on("echo", (message, entries) => {
     //console.log("ECHO");
     //console.log(entries);
     socket.write(message);
@@ -110,7 +108,7 @@ server.on("connection", (socket) => {
     store.on("error", (err) => {
       socket.emit("error", err);
     });
-      
+
 
     /*
     const typeStorage = {
