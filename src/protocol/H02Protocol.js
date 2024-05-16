@@ -58,7 +58,9 @@ server.on("connection", (socket) => {
             // invalidConnection - It could arrive as cached data on the device.
             socket.emit("store", "invalidConnection", frame.entries);
           }
+
           socket.emit("decode", frame.entries);
+
           return;
         case "HTBT":
         case "V0":
@@ -99,6 +101,7 @@ server.on("connection", (socket) => {
     const typeStorage = {
       "heartbeatConnection": storage.updateDevice,
       "position": null,
+      "invalidConnection": null
     };
 
     const store = typeStorage[type]({ imei: entries.imei });
