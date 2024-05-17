@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 import { Entries } from "./BaseDecode.js";
-import { strSizeSplit } from "../decodeutil/utilities.js";
-import { dateISO8601 } from "../decodeutil/utilDate.js";
+import { dateISO8601 } from "../utils/decode/formatDate.js";
+import { strSizeSplit } from "../utils/string.js";
 
 class H02Entries extends Entries {
   constructor(entries, opts) {
